@@ -3,7 +3,7 @@ import asyncio
 from telegram import Update
 from telegram.ext import Application, ChatMemberHandler, ContextTypes
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+BOT_TOKEN = os.getenv("BOT_TOKEn")
 
 # Customize these
 WELCOME_TEXT = "Welcome {username} 👋\nPlease read the rules and enjoy the channel!"
@@ -31,3 +31,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
