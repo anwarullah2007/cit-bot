@@ -4,27 +4,27 @@ from flask import Flask, request
 from telegram import Update
 from telegram.ext import (
     Application,
-    ChatMemberHandler,
     CommandHandler,
+    ChatMemberHandler,
     ContextTypes,
 )
 
 BOT_TOKEN = os.getenv("CIT_TOKEN")
 PORT = int(os.getenv("PORT", 8080))
 
-WELCOME_TEXT = "Welcome {username} 👋\nEnjoy the group!"
+WELCOME_TEXT = "Welcome {username} 👋"
 DELETE_AFTER = 10
 
 app = Flask(__name__)
 application = Application.builder().token(BOT_TOKEN).build()
 
 
-# ---- COMMAND TO TEST BOT ----
+# ---- /start COMMAND ----
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("✅ cit-bot is running")
 
 
-# ---- WELCOME MESSAGE ----
+# ---- WELCOME HANDLER ----
 async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
     member = update.chat_member
     if member.new_chat_member.status == "member":
@@ -45,18 +45,14 @@ application.add_handler(ChatMemberHandler(welcome, ChatMemberHandler.CHAT_MEMBER
 
 
 @app.route("/", methods=["POST"])
-async def webhook():
+def webhook():
     update = Update.de_json(request.get_json(force=True), application.bot)
-    await application.process_update(update)
+    asyncio.run(application.process_update(update))
     return "OK"
 
 
-async def main():
-    await application.initialize()
-    await application.start()
-    print("✅ cit-bot webhook started")
-
-
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(application.initialize())
+    asyncio.run(application.start())
+    print("✅ cit-bot webhook started")
     app.run(host="0.0.0.0", port=PORT)
