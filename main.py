@@ -16,15 +16,15 @@ WELCOME_TEXT = "Welcome {username} 👋\nEnjoy the group!"
 DELETE_AFTER = 10
 
 app = Flask(__name__)
-tg_app = Application.builder().token(BOT_TOKEN).build()
+application = Application.builder().token(BOT_TOKEN).build()
 
 
-# ---- TEST COMMAND ----
+# ---- COMMAND TO TEST BOT ----
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("✅ cit-bot is running (webhook)")
+    await update.message.reply_text("✅ cit-bot is running")
 
 
-# ---- WELCOME HANDLER ----
+# ---- WELCOME MESSAGE ----
 async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
     member = update.chat_member
     if member.new_chat_member.status == "member":
@@ -40,24 +40,23 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await msg.delete()
 
 
-tg_app.add_handler(CommandHandler("start", start))
-tg_app.add_handler(ChatMemberHandler(welcome, ChatMemberHandler.CHAT_MEMBER))
+application.add_handler(CommandHandler("start", start))
+application.add_handler(ChatMemberHandler(welcome, ChatMemberHandler.CHAT_MEMBER))
 
 
 @app.route("/", methods=["POST"])
-def webhook():
-    update = Update.de_json(request.get_json(force=True), tg_app.bot)
-    tg_app.update_queue.put_nowait(update)
+async def webhook():
+    update = Update.de_json(request.get_json(force=True), application.bot)
+    await application.process_update(update)
     return "OK"
 
 
-async def init_bot():
-    await tg_app.initialize()
-    await tg_app.start()
+async def main():
+    await application.initialize()
+    await application.start()
+    print("✅ cit-bot webhook started")
 
 
 if __name__ == "__main__":
-    print("CIT BOT WEBHOOK STARTED")
-    asyncio.run(init_bot())
+    asyncio.run(main())
     app.run(host="0.0.0.0", port=PORT)
-
