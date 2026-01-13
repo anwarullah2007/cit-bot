@@ -9,7 +9,7 @@ from telegram.ext import (
     ContextTypes,
 )
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+BOT_TOKEN = os.getenv("CIT_TOKEN")
 PORT = int(os.getenv("PORT", 8080))
 
 WELCOME_TEXT = "Welcome {username} 👋\nEnjoy the group!"
@@ -60,3 +60,4 @@ if __name__ == "__main__":
     print("CIT BOT WEBHOOK STARTED")
     asyncio.run(init_bot())
     app.run(host="0.0.0.0", port=PORT)
+
