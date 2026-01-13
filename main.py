@@ -5,7 +5,7 @@ from telegram.ext import Application, ChatMemberHandler, ContextTypes
 
 print("BOT STARTING...")
 
-BOT_TOKEN = os.getenv("BOT_TOKEn")
+BOT_TOKEN = os.getenv("CIT_TOKEN")
 if not BOT_TOKEN:
     raise RuntimeError("BOT_TOKEN is missing")
 
@@ -34,3 +34,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
