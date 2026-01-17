@@ -9,7 +9,7 @@ from telegram.ext import (
 )
 
 # ===== CONFIG =====
-BOT_TOKEN = os.environ["BOT_TOKEN"]
+BOT_TOKEN = os.environ["CIT_TOKEN"]
 WELCOME_TEXT = "Welcome to the group! 🚀"
 DELETE_AFTER_SECONDS = 10
 
@@ -71,3 +71,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
