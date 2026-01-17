@@ -8,7 +8,7 @@ from telegram.ext import (
     ChatMemberHandler,
 )
 
-BOT_TOKEN = os.environ["BOT_TOKEn"]
+BOT_TOKEN = os.environ["CIT_TOKEN"]
 
 WELCOME_TEXT = "Welcome to the channel! 🚀"
 
@@ -45,3 +45,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
