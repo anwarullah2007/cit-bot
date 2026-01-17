@@ -1,58 +1,47 @@
 import os
 import asyncio
-from flask import Flask, request
 from telegram import Update
 from telegram.ext import (
     Application,
     CommandHandler,
-    ChatMemberHandler,
     ContextTypes,
+    ChatMemberHandler,
 )
 
-BOT_TOKEN = os.getenv("CIT_TOKEN")
-PORT = int(os.getenv("PORT", 8080))
+BOT_TOKEN = os.environ["BOT_TOKEn"]
 
-WELCOME_TEXT = "Welcome {username} 👋"
-DELETE_AFTER = 10
+WELCOME_TEXT = "Welcome to the channel! 🚀"
 
-app = Flask(__name__)
-application = Application.builder().token(BOT_TOKEN).build()
+# -------- HANDLERS --------
 
-
-# ---- /start COMMAND ----
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("✅ cit-bot is running")
 
-
-# ---- WELCOME HANDLER ----
 async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    member = update.chat_member
-    if member.new_chat_member.status == "member":
-        user = member.new_chat_member.user
-        username = f"@{user.username}" if user.username else user.first_name
+    member = update.chat_member.new_chat_member
+    if member.status == "member":
+        user = member.user
+        name = user.mention_html()
 
         msg = await context.bot.send_message(
-            chat_id=member.chat.id,
-            text=WELCOME_TEXT.format(username=username),
+            chat_id=update.chat_member.chat.id,
+            text=f"👋 Welcome {name}\n\n{WELCOME_TEXT}",
+            parse_mode="HTML"
         )
 
-        await asyncio.sleep(DELETE_AFTER)
+        await asyncio.sleep(10)
         await msg.delete()
 
+# -------- MAIN --------
 
-application.add_handler(CommandHandler("start", start))
-application.add_handler(ChatMemberHandler(welcome, ChatMemberHandler.CHAT_MEMBER))
+def main():
+    app = Application.builder().token(BOT_TOKEN).build()
 
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(ChatMemberHandler(welcome, ChatMemberHandler.CHAT_MEMBER))
 
-@app.route("/", methods=["POST"])
-def webhook():
-    update = Update.de_json(request.get_json(force=True), application.bot)
-    asyncio.run(application.process_update(update))
-    return "OK"
-
+    print("✅ CIT BOT STARTED (POLLING MODE)")
+    app.run_polling()
 
 if __name__ == "__main__":
-    asyncio.run(application.initialize())
-    asyncio.run(application.start())
-    print("✅ cit-bot webhook started")
-    app.run(host="0.0.0.0", port=PORT)
+    main()
