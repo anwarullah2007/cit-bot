@@ -11,7 +11,6 @@ from telegram.ext import (
 
 BOT_TOKEN = os.environ["CIT_TOKEN"]
 
-WELCOME_TEXT = "Welcome to the group! 🚀"
 DELETE_AFTER_SECONDS = 10
 
 
@@ -28,11 +27,16 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for user in update.message.new_chat_members:
         print(f"👤 New user joined: {user.id}")
 
-        name = user.mention_html()
+        # Use mention_html to safely mention the user
+        username = user.mention_html()
 
-        msg = await update.message.reply_html(
-            f"👋 Welcome {name}\n\n{WELCOME_TEXT}"
+        welcome_text = (
+            f"👋 Hey there {username},\n\n"
+            f"Welcome to **CIT alpha gang**! 🚀\n"
+            f"How are you?"
         )
+
+        msg = await update.message.reply_html(welcome_text)
 
         print("🕒 Waiting before deleting welcome message")
         await asyncio.sleep(DELETE_AFTER_SECONDS)
