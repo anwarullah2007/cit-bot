@@ -32,7 +32,7 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         welcome_text = (
             f"👋 Hey there {username},\n\n"
-            f"Welcome to **CIT alpha gang**! 🚀\n"
+            f"Welcome to CIT alpha gang! 🚀\n"
             f"How are you?"
         )
 
@@ -62,3 +62,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
